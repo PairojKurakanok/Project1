@@ -2,28 +2,26 @@ using UnityEngine;
 
 public class GolfBallController : MonoBehaviour
 {
-    public float hitForce = 10f; // ความแรงในการยิง
-    private Rigidbody rb;
-    private bool isHit = false;
-
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    public Rigidbody rb;
+    public float hitForce = 10f; // แรงตีลูกกอล์ฟ
+    private Vector3 hitDirection;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // คลิกเมาส์เพื่อยิง
+        if (Input.GetMouseButtonDown(0))
         {
-            isHit = true;
+            hitDirection = CalculateHitDirection();
         }
 
-        if (isHit)
+        if (Input.GetMouseButtonUp(0))
         {
-            // ยิงลูกกอล์ฟ
-            Vector3 hitDirection = (Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)) - transform.position).normalized;
             rb.AddForce(hitDirection * hitForce, ForceMode.Impulse);
-            isHit = false;
         }
+    }
+
+    Vector3 CalculateHitDirection()
+    {
+        // คำนวณทิศทางที่ผู้เล่นเลือก
+        return (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
     }
 }
